@@ -48,7 +48,7 @@ class MojificationController extends Controller
     	foreach ($noMojificationsYet as $userFriend) {
     		$userFriend->role = null;
     		$userFriend->userId = $userFriend->id;
-    		
+
     		unset($userFriend->id);
     		unset($userFriend->avatar);
     		unset($userFriend->fb_id);
@@ -65,5 +65,13 @@ class MojificationController extends Controller
 		});
 
     	return $userMojifications;
+    }
+
+    public function store(Request $request)
+    {
+    	// sedner == sender && receiver == receiver
+    	// sender == receiver && receiver == sender
+    	// receiver == sender && sender == receiver
+    	// Finns inte
     }
 }
