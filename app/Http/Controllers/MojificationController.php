@@ -69,9 +69,36 @@ class MojificationController extends Controller
 
     public function store(Request $request)
     {
-    	// sedner == sender && receiver == receiver
-    	// sender == receiver && receiver == sender
-    	// receiver == sender && sender == receiver
-    	// Finns inte
+    	// 1 sedner == sender && receiver == receiver
+    	// 2 sender == receiver && receiver == sender
+    	// 3 Finns inte
+
+    	// 1
+    	$mojification = Mojification::whereColumn([
+            ['sender', '=', $request->sender],
+            ['receiver', '=', $request->receiver]
+        ])->get();
+    	if ($mojification) {
+    		$mojification->sender = $request->sender;
+    		$mojification->receiver = $request->receiver;
+    		$mojification->save();
+    	}
+
+        // 2
+    	$mojification = Mojification::whereColumn([
+            ['sender', '=', $request->receiver],
+            ['receiver', '=', $request->sender]
+        ])->get();
+    	if ($mojification) {
+    		$mojification->sender = $request->sender;
+    		$mojification->receiver = $request->receiver;
+    		$mojification->save();
+    	}
+
+        // 3
+        $mojification = create([
+        	'sender' => $request->sender,
+        	'receiver' => $request->receiver
+       	]);
     }
 }
