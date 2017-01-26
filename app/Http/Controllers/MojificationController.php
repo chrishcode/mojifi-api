@@ -46,13 +46,16 @@ class MojificationController extends Controller
     	}
     	$noMojificationsYet = $userFriends;
     	foreach ($noMojificationsYet as $userFriend) {
+    		$userFriend->role = null;
+    		$userFriend->userId = $userFriend->id;
+    		
     		unset($userFriend->id);
     		unset($userFriend->avatar);
     		unset($userFriend->fb_id);
     		unset($userFriend->fb_friends);
     		unset($userFriend->created_at);
     		unset($userFriend->updated_at);
-    		$userFriend->role = null;
+
     		array_push($userMojifications, $userFriend);
     	}
 
