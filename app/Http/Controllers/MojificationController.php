@@ -64,7 +64,7 @@ class MojificationController extends Controller
     		return strtotime($b->created_at) - strtotime($a->created_at);
 		});
 
-    	return $userMojifications;
+        return response()->json($userMojifications);
     }
 
     public function store(Request $request)
