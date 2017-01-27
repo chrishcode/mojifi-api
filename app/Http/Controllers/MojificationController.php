@@ -69,36 +69,42 @@ class MojificationController extends Controller
 
     public function store(Request $request)
     {
-    	// 1 sedner == sender && receiver == receiver
-    	// 2 sender == receiver && receiver == sender
-    	// 3 Finns inte
+    	// Check if friends (the sender and the receiver of the mojification) has been in contact before,
+        // if so update record.
+    	$mojification = Mojification::where('sender', '=', $request->sender)
+                                    ->where('receiver', '=', $request->receiver)
+                                    ->first();
+    	if (!empty($mojification)) {
+            $mojification->update([
+                'sender' => $request->sender,
+                'receiver' => $request->receiver,
+                'emoji' => $request->emoji
+            ]);
 
-    	// 1
-    	$mojification = Mojification::whereColumn([
-            ['sender', '=', $request->sender],
-            ['receiver', '=', $request->receiver]
-        ])->get();
-    	if ($mojification) {
-    		$mojification->sender = $request->sender;
-    		$mojification->receiver = $request->receiver;
-    		$mojification->save();
+            return $mojification;
     	}
 
-        // 2
-    	$mojification = Mojification::whereColumn([
-            ['sender', '=', $request->receiver],
-            ['receiver', '=', $request->sender]
-        ])->get();
-    	if ($mojification) {
-    		$mojification->sender = $request->sender;
-    		$mojification->receiver = $request->receiver;
-    		$mojification->save();
-    	}
+        $mojification = Mojification::where('sender', '=', $request->receiver)
+            ->where('receiver', '=', $request->sender)
+            ->first();
+        if (!empty($mojification)) {
+            $mojification->update([
+                'sender' => $request->sender,
+                'receiver' => $request->receiver,
+                'emoji' => $request->emoji
+            ]);
 
-        // 3
-        $mojification = create([
+            return $mojification;
+        }
+
+        // If the friends (the sender and the receiver of the mojification) has not been in contact before,
+        // create new record.
+        $mojification = Mojification::create([
         	'sender' => $request->sender,
-        	'receiver' => $request->receiver
+        	'receiver' => $request->receiver,
+            'emoji' => $request->emoji
        	]);
+
+        return $mojification;
     }
 }
