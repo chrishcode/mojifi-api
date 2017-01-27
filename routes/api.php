@@ -15,6 +15,10 @@ use Illuminate\Http\Request;
 
 Route::get('/users/{id}/mojifications', 'MojificationController@index');
 Route::post('/mojifications', 'MojificationController@store');
+Route::post('/users', 'UserController@store');
+Route::get('/users/{id}', function ($id) {
+    return \App\User::find($id);
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
