@@ -18,7 +18,8 @@ class MojificationController extends Controller
     	$sentMojifications = Mojification::whereSender($user->id)->get();
     	foreach ($sentMojifications as $key => $sentMojification) {
     		$sentMojification->role = 'sender';
-    		$sentMojification->receiverName = User::find($sentMojification->receiver)->name;
+    		$sentMojification->name = User::find($sentMojification->receiver)->name;
+            $sentMojification->userId = User::find($sentMojification->receiver)->id;
     		array_push($userMojifications, $sentMojification);
     	}
 
@@ -26,7 +27,8 @@ class MojificationController extends Controller
     	$receivedMojifications = Mojification::whereReceiver($user->id)->get();
     	foreach ($receivedMojifications as $key => $receivedMojification) {
     		$receivedMojification->role = 'receiver';
-    		$receivedMojification->senderName = User::find($receivedMojification->sender)->name;
+    		$receivedMojification->name = User::find($receivedMojification->sender)->name;
+            $receivedMojification->userId = User::find($receivedMojification->sender)->id;
     		array_push($userMojifications, $receivedMojification);
     	}
 
@@ -61,7 +63,7 @@ class MojificationController extends Controller
 
     	// Sort mojifications by newest
     	usort($userMojifications, function($a, $b) {
-    		return strtotime($b->created_at) - strtotime($a->created_at);
+    		return strtotime($b->updated_at) - strtotime($a->updated_at);
 		});
 
         return response()->json($userMojifications);
